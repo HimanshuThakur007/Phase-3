@@ -1,0 +1,91 @@
+.image-style-side {
+    float: right;
+    margin-right: 20px; /* Adjust as needed */
+  }
+
+  .react-datepicker-wrapper {
+    display: block;
+    padding: 0;
+    /* border: 2px solid red; */
+  }
+  .custom-datepicker-wrapper {
+    display: block; /* Override display */
+    padding: 0px;  /* Add padding */
+    border: 2px solid red; /* Customize border */
+  }
+
+
+  /* For Chrome, Safari, Edge, Opera */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+.no-spinner[type='number'] {
+  -moz-appearance: textfield;
+}
+/* ------written  by  vivek singh rajput-------------- */
+  /* for react-datepicker */
+.react-datepicker-wrapper {
+  width: 100%; 
+}
+
+
+
+.ant-table-thead {
+  z-index: 0 !important; 
+}
+
+.ant-table-header {
+  z-index: 0 !important; 
+}
+
+/* for antd-table -header--- */
+.ant-table-thead > tr > th {
+  z-index: 0 !important; 
+}
+
+.ant-table-tbody {
+  z-index: 0 !important;
+  position: relative; 
+}
+/* for react  datepicker--- */
+.react-datepicker__portal {
+  z-index: 1000 !important; 
+}
+
+.react-datepicker-popper {
+  z-index: 1000 !important; 
+}
+
+/* for normal select------ */
+.custom-select-container select {
+  z-index: 1001 !important; 
+  position: relative;
+}
+
+
+/* --react select dropdown */
+.react-select__menu {
+  z-index: 1000 !important; 
+}
+
+
+/* ---antd  table  filter  dropdown-- */
+.ant-table-filter-dropdown {
+  z-index: 2000 !important; 
+}
+
+
+.custom-summary-row .ant-table-cell {
+  padding-top: 5px; 
+  padding-bottom: 5px; 
+}
+
+/* Optional: To control padding or margins specifically */
+.custom-summary-row {
+  padding-top: 5px;
+  padding-bottom: 5px; 
+}

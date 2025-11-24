@@ -1,0 +1,430 @@
+// .select {
+//   .react-select__control {
+//     height: 40px;
+//     min-height: 40px;
+//     display: flex;
+//     align-items: center;
+//     background-color: $form-control-bg;
+//     border: 1px solid $input-border;
+//     color: $text-color;
+//     font-size: 0.875rem;
+//     font-weight: $font-weight-normal;
+//     line-height: 1.6;
+
+//     &:hover {
+//       border-color: $input-border;
+//     }
+
+//     &--is-focused {
+//       box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+//       border-color: $input-border;
+//       background-color: $white;
+//       color: $text-color;
+//     }
+
+//     &--is-disabled {
+//       background-color: $light;
+//       color: $text-color;
+//       opacity: 0.7;
+//     }
+//   }
+
+//   .react-select__value-container {
+//     height: 40px;
+//     padding: 0 8px;
+//     display: flex;
+//     align-items: center;
+//     position: relative;
+//     line-height: 1.6;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//     white-space: nowrap;
+//   }
+
+//   .react-select__input-container {
+//     margin: 0;
+//     padding: 0;
+//     display: flex;
+//     align-items: center;
+//     color: $text-color;
+
+//     input {
+//       color: $text-color !important;
+//     }
+//   }
+
+//   .react-select__single-value {
+//     display: flex;
+//     align-items: center;
+//     color: $text-color;
+//     line-height: 1.6;
+//     max-width: 100%;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//     position: absolute;
+//     top: 50%;
+//     transform: translateY(-50%);
+//   }
+
+//   .react-select__menu {
+//     background-color: $white;
+//     border: 1px solid $input-border;
+//   }
+
+//   .react-select__option {
+//     background-color: $white;
+//     color: $text-color;
+
+//     &:hover,
+//     &--is-focused {
+//       background-color: rgba(var($primary), 0.2);
+//       color: $primary;
+//     }
+
+//     &--is-selected {
+//       background-color: rgba(var($primary), 0.2);
+//       color: $primary;
+//     }
+//   }
+
+//   .react-select__placeholder {
+//     color: $text-muted;
+//     font-weight: $font-weight-medium;
+//     opacity: 0.7;
+//     font-size: 0.875rem;
+//     /* Match control font-size */
+//     line-height: 1.6;
+//     /* Match control line-height */
+//     position: absolute;
+//     /* Center vertically */
+//     top: 50%;
+//     transform: translateY(-50%);
+//     opacity: 0.7;
+//   }
+
+//   .react-select__indicator-separator {
+//     background-color: $input-border;
+//   }
+
+//   .react-select__dropdown-indicator {
+//     color: $text-muted;
+
+//     &:hover {
+//       color: $text-color;
+//     }
+//   }
+// }
+
+// [data-layout-mode="dark_mode"] {
+//   .select {
+//     .react-select__control {
+//       color: $white;
+//       border-color: rgba($white, 0.2);
+
+//       &:hover {
+//         border-color: rgba($white, 0.3);
+//       }
+
+//       &--is-focused {
+//         background-color: $dark;
+//         border-color: rgba($white, 0.3);
+//         box-shadow: 0 0.0625rem 0.125rem 0 rgba(255, 255, 255, 0.05);
+//         color: $white;
+//       }
+
+//       &--is-disabled {
+//         background-color: rgba($light, 0.2);
+//         color: rgba($white, 0.7);
+//       }
+//     }
+
+//     .react-select__value-container {
+//       color: $white;
+//       height: 40px;
+//       padding: 0 8px;
+//       display: flex;
+//       align-items: center;
+//       position: relative;
+//       line-height: 1.6;
+//       overflow: hidden;
+//       text-overflow: ellipsis;
+//       white-space: nowrap;
+//     }
+
+//     .react-select__input-container {
+//       color: $white;
+
+//       input {
+//         color: $white !important;
+//       }
+//     }
+
+//     .react-select__single-value {
+//       display: flex !important;
+//       align-items: center !important;
+//       color: #ffffff !important;
+//       /* Increased specificity with !important */
+//       line-height: 1.6 !important;
+//       max-width: 100% !important;
+//       overflow: hidden !important;
+//       text-overflow: ellipsis !important;
+//       position: absolute !important;
+//       top: 50% !important;
+//       transform: translateY(-50%) !important;
+//     }
+
+//     .react-select__menu {
+//       background-color: $dark;
+//       border: 1px solid $input-border;
+//     }
+
+//     .react-select__option {
+//       background-color: $dark;
+//       color: #ffffff;
+
+//       &:hover,
+//       &--is-focused {
+//         background-color: rgba(var($primary), 0.3);
+//         color: $primary;
+//       }
+
+//       &--is-selected {
+//         // background-color: rgba(var($primary), 0.3);
+//         color: $primary;
+//       }
+//     }
+
+//     .react-select__placeholder {
+//       color: rgba($white, 0.5);
+//     }
+
+//     .react-select__indicator-separator {
+//       background-color: rgba($white, 0.2);
+//     }
+
+//     .react-select__dropdown-indicator {
+//       color: rgba($white, 0.5);
+
+//       &:hover {
+//         color: $white;
+//       }
+//     }
+//   }
+// }
+
+
+
+/* -------------------------------------------------
+   Common (light + dark) – works for single & multi
+   ------------------------------------------------- */
+.select {
+
+  /* Control ------------------------------------------------ */
+  .react-select__control {
+    min-height: 40px; // keep the minimum size
+    height: auto; // let it grow for multi
+    display: flex;
+    align-items: center;
+    background-color: $form-control-bg;
+    border: 1px solid $input-border;
+    color: $text-color;
+    font-size: 0.875rem;
+    font-weight: $font-weight-normal;
+    line-height: 1.6;
+    padding: 0 8px; // same padding as value-container
+
+    &:hover {
+      border-color: $input-border;
+    }
+
+    &--is-focused {
+      box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+      border-color: $input-border;
+      background-color: $white;
+    }
+
+    &--is-disabled {
+      background-color: $light;
+      color: $text-color;
+      opacity: 0.7;
+    }
+  }
+
+  /* Value container – the heart of the fix ---------------- */
+  .react-select__value-container {
+    min-height: 38px; // 40px control – 1px border each side
+    height: auto; // grow for multi-select chips
+    padding: 4px 0; // vertical only → horizontal handled by control
+    display: flex;
+    flex-wrap: wrap; // wrap chips
+    align-items: center;
+    gap: 4px; // space between chips
+    line-height: 1.6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; // keep single line when not multi
+
+    /* When it is a multi-select, make it wrap */
+    &--is-multi {
+      white-space: normal;
+      overflow: visible;
+    }
+  }
+
+  /* Input (typing) --------------------------------------- */
+  .react-select__input-container {
+    margin: 0;
+    padding: 0;
+    color: $text-color;
+
+    input {
+      color: $text-color !important;
+    }
+  }
+
+  /* Single value – only absolute in single-select -------- */
+  .react-select__single-value {
+    color: $text-color;
+    line-height: 1.6;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    /* Keep it vertically centered only for single-select */
+    .react-select__value-container:not(.react-select__value-container--is-multi) & {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  /* Menu & options --------------------------------------- */
+  .react-select__menu {
+    background-color: $white;
+    border: 1px solid $input-border;
+  }
+
+  .react-select__option {
+    background-color: $white;
+    color: $text-color;
+
+    &:hover,
+    &--is-focused {
+      background-color: rgba(var($primary), 0.2);
+      color: $primary;
+    }
+
+    &--is-selected {
+      background-color: rgba(var($primary), 0.2);
+      color: $primary;
+    }
+  }
+
+  .react-select__placeholder {
+    color: $text-muted;
+    font-weight: $font-weight-medium;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    opacity: 0.7;
+
+    .react-select__value-container:not(.react-select__value-container--is-multi) & {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  .react-select__indicator-separator {
+    background-color: $input-border;
+  }
+
+  .react-select__dropdown-indicator {
+    color: $text-muted;
+
+    &:hover {
+      color: $text-color;
+    }
+  }
+}
+
+/* -------------------------------------------------
+   Dark mode overrides
+   ------------------------------------------------- */
+[data-layout-mode="dark_mode"] {
+  .select {
+    .react-select__control {
+      color: $white;
+      border-color: rgba($white, 0.2);
+      background-color: $dark;
+
+      &:hover {
+        border-color: rgba($white, 0.3);
+      }
+
+      &--is-focused {
+        background-color: $dark;
+        border-color: rgba($white, 0.3);
+        box-shadow: 0 0.0625rem 0.125rem 0 rgba(255, 255, 255, 0.05);
+        color: $white;
+      }
+
+      &--is-disabled {
+        background-color: rgba($light, 0.2);
+        color: rgba($white, 0.7);
+      }
+    }
+
+    .react-select__value-container {
+      color: $white;
+    }
+
+    .react-select__input-container {
+      color: $white;
+
+      input {
+        color: $white !important;
+      }
+    }
+
+    .react-select__single-value {
+      color: $white;
+    }
+
+    .react-select__menu {
+      background-color: $dark;
+      border-color: rgba($white, 0.2);
+    }
+
+    .react-select__option {
+      background-color: $dark;
+      color: $white;
+
+      &:hover,
+      &--is-focused {
+        background-color: rgba(var($primary), 0.3);
+        color: $primary;
+      }
+
+      &--is-selected {
+        background-color: rgba(var($primary), 0.3);
+        color: $primary;
+      }
+    }
+
+    .react-select__placeholder {
+      color: rgba($white, 0.5);
+    }
+
+    .react-select__indicator-separator {
+      background-color: rgba($white, 0.2);
+    }
+
+    .react-select__dropdown-indicator {
+      color: rgba($white, 0.5);
+
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+}

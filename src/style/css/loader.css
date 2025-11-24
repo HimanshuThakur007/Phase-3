@@ -1,0 +1,21 @@
+/* ------------loader by me------------- */
+
+.loader-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background: rgba(228, 228, 228, 0.5);
+	/* overflow: -moz-hidden-unscrollable; */
+	overflow: show;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	z-index: 100;
+
+
+}

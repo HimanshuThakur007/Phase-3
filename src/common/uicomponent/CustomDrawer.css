@@ -1,0 +1,256 @@
+/* --- Base Drawer Styles --- */
+.custom-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  background: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1050;
+  overflow-y: auto;
+  width: 100%; /* Default to full width for mobile */
+  max-width: 720px; /* Default max-width for larger screens */
+}
+
+/* Open state */
+.custom-drawer.open {
+  transform: translateX(0);
+}
+
+/* --- Drawer Header --- */
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.drawer-header h5 {
+  margin: 0;
+  font-size: 1.25rem; /* Responsive font size */
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+}
+
+/* --- Tabs --- */
+.drawer-tabs {
+  padding: 8px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.drawer-tabs .nav-tabs {
+  border-bottom: none;
+  display: flex;
+  flex-wrap: nowrap;
+  /* overflow-x: auto;  */
+}
+
+.drawer-tabs .nav-item {
+  flex: 1;
+  min-width: 80px; /* Ensure tabs are not too small */
+}
+
+.drawer-tabs .nav-link {
+  color: #333;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.drawer-tabs .nav-link.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* --- Drawer Body --- */
+.drawer-body {
+  padding: 16px;
+  flex: 1;
+  overflow-y: auto; /* Ensure body content scrolls if needed */
+}
+
+.drawer-body .mainlandingpage {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.drawer-body .card {
+  margin-bottom: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #000;
+  padding: 8px;
+}
+
+/* --- Footer --- */
+.drawer-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #e0e0e0;
+  text-align: right;
+}
+
+.drawer-footer .btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+/* --- Responsive Adjustments --- */
+
+/* Mobile screens (up to 576px) */
+@media (max-width: 576px) {
+  .custom-drawer {
+    max-width: 100%; /* Full width on mobile */
+  }
+
+  .drawer-header h5 {
+    font-size: 1rem;
+  }
+
+  .close-button {
+    font-size: 1.25rem;
+    padding: 6px;
+  }
+
+  .drawer-tabs .nav-link {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+
+  .drawer-body {
+    padding: 12px;
+  }
+
+  .drawer-body .mainlandingpage {
+    font-size: 1rem;
+  }
+
+  .drawer-footer .btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* Adjust GridTable height for smaller screens */
+  .drawer-body .grid-table-container {
+    height: 200px !important; /* Override GridTable height */
+  }
+}
+
+/* Tablet screens (577px to 768px) */
+@media (min-width: 577px) and (max-width: 768px) {
+  .custom-drawer {
+    max-width: 80%; /* 80% width on tablets */
+  }
+
+  .drawer-header h5 {
+    font-size: 1.1rem;
+  }
+
+  .drawer-tabs .nav-link {
+    font-size: 0.85rem;
+    padding: 7px 10px;
+  }
+
+  .drawer-body {
+    padding: 14px;
+  }
+
+  .drawer-body .mainlandingpage {
+    font-size: 1.05rem;
+  }
+
+  .drawer-footer .btn {
+    padding: 7px 14px;
+    font-size: 0.85rem;
+  }
+
+  .drawer-body .grid-table-container {
+    height: 225px !important;
+  }
+}
+
+/* Desktop screens (769px and above) */
+@media (min-width: 769px) {
+  .custom-drawer {
+    max-width: 720px; /* Use prop-defined width or default */
+  }
+
+  .drawer-header h5 {
+    font-size: 1.25rem;
+  }
+
+  .drawer-tabs .nav-link {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .drawer-body {
+    padding: 16px;
+  }
+
+  .drawer-body .mainlandingpage {
+    font-size: 1.1rem;
+  }
+
+  .drawer-footer .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* --- Dark Mode --- */
+.custom-drawer.dark {
+  background: #1e1e2f;
+  color: #f1f1f1;
+}
+
+.custom-drawer.dark .drawer-header,
+.custom-drawer.dark .drawer-tabs,
+.custom-drawer.dark .drawer-footer {
+  border-color: #333;
+  background-color: #2a2a3d;
+}
+
+.custom-drawer.dark .drawer-tabs .nav-link {
+  color: #ccc;
+}
+
+.custom-drawer.dark .drawer-tabs .nav-link.active {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.custom-drawer.dark .drawer-body .card {
+  background-color: #2a2a3d;
+  border-color: #444;
+  color: #fff;
+}
+
+.custom-drawer.dark .drawer-footer .btn-secondary {
+  background-color: #555;
+  border-color: #444;
+  color: #fff;
+}
+
+.custom-drawer.dark .drawer-footer .btn-secondary:hover {
+  background-color: #666;
+  border-color: #555;
+}
+
+.custom-drawer.dark .close-button {
+  color: #fff;
+}

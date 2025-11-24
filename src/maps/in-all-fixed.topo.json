@@ -1,0 +1,43 @@
+{
+  "type": "Topology",
+  "transform": {
+    "scale": [0.00001, 0.00001],
+    "translate": [68.176645, 6.747139]
+  },
+  "objects": {
+    "default": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Polygon",
+          "properties": {
+            "hc-key": "in-up",
+            "name": "Uttar Pradesh"
+          },
+          "arcs": [[0]]
+        },
+        {
+          "type": "Polygon",
+          "properties": {
+            "hc-key": "in-mh",
+            "name": "Maharashtra"
+          },
+          "arcs": [[1]]
+        },
+        {
+          "type": "Polygon",
+          "properties": {
+            "hc-key": "in-jk",
+            "name": "Jammu and Kashmir"
+          },
+          "arcs": [[2]]
+        }
+      ]
+    }
+  },
+  "arcs": [
+    [[1000, 2000], [10, 20], [-5, 10], [-15, -10], [10, -20]],
+    [[1500, 2500], [20, 30], [-10, 20], [-25, -30], [15, -25]],
+    [[1200, 1800], [15, 15], [-10, 20], [-20, -15], [5, -20]]
+  ]
+}

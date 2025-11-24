@@ -1,0 +1,155 @@
+.trial-container {
+  font-family: 'Segoe UI', sans-serif;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.trial-scroll-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid #ddd; /* Fallback border */
+  border-radius: 4px;
+  position: relative;
+  max-width: 100%;
+}
+
+.trial-table {
+  width: 100%;
+  border-collapse: separate; /* Changed to separate to ensure borders are visible */
+  border-spacing: 0;
+  font-size: 0.95rem;
+  table-layout: fixed; /* Consistent column widths */
+  min-width: 600px;
+}
+
+/* Define CSS variables for AG Grid-like styling */
+.trial-container[data-theme="light_mode"] {
+  --table-bg: #ffffff;
+  --header-bg: #004588;
+  --header-text: #ffffff;
+  --row-odd-bg: #ffffff;
+  --row-even-bg: #f0f4f8;
+  --row-hover-bg: rgba(0, 0, 0, 0.05);
+  --footer-bg: #f8f9fa;
+  --border-color: #dee2e6;
+  /* --text-color: #000000; */
+  --child-text-color: #4b0082; /* Distinct color for child rows in light_mode */
+}
+
+.trial-container[data-theme="dark_mode"] {
+  --table-bg: #1d1d42;
+  --header-bg: #1d1d42;
+  --header-text: #ffffff;
+  --row-odd-bg: #3a3a5a;
+  --row-even-bg: #2a2a4a;
+  --row-hover-bg: rgba(255, 255, 255, 0.1);
+  --footer-bg: #333333;
+  --border-color: #666666;
+  --text-color: #ffffff;
+  --child-text-color: #a0a0ff; /* Distinct color for child rows in dark_mode */
+}
+
+/* Apply CSS variables */
+.trial-table {
+  background-color: var(--table-bg) !important;
+}
+
+/* Sticky header */
+.trial-table thead tr {
+  background-color: var(--header-bg) !important;
+  color: var(--header-text) !important;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Sticky footer */
+.trial-table tfoot tr.trial-footer-fixed {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--footer-bg) !important;
+  color: var(--text-color) !important;
+  z-index: 3;
+  font-weight: bold;
+}
+
+/* Row styling */
+.trial-table tbody tr:nth-child(odd) {
+  background-color: var(--row-odd-bg) !important;
+}
+
+.trial-table tbody tr:nth-child(even) {
+  background-color: var(--row-even-bg) !important;
+}
+
+.trial-table tbody tr:hover {
+  background-color: var(--row-hover-bg) !important;
+}
+
+/* Child row styling */
+.trial-table tbody tr[aria-expanded="true"] ~ tr {
+  color: var(--child-text-color) !important;
+}
+
+/* Cell styling */
+.trial-table th,
+.trial-table td {
+  padding: 3px 12px;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-color) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cursor for rows */
+.trial-table tbody tr {
+  cursor: pointer !important; /* Matches AG Grid's cursor prop */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .trial-table {
+    font-size: 0.85rem;
+    min-width: 400px;
+  }
+
+  .trial-table th,
+  .trial-table td {
+    padding: 6px 8px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .trial-table button,
+  .trial-table .cursor-pointer {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .trial-table {
+    font-size: 0.75rem;
+  }
+
+  .trial-table th,
+  .trial-table td {
+    padding: 4px 6px;
+  }
+}
+
+/* Responsive wrapper headers */
+.d-flex.justify-content-between {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .d-flex.justify-content-between {
+    flex-direction: row;
+  }
+}
