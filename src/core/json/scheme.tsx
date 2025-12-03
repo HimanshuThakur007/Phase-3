@@ -42,7 +42,7 @@ const scheme: FormSchema = {
         name: "startDate",
         label: "Start Date",
         placeholder: "Select start Date",
-        required: false,
+        required: true,
       },
     },
     endDate: {
@@ -53,7 +53,7 @@ const scheme: FormSchema = {
         name: "endDate",
         label: "End Date",
         placeholder: "End Date",
-        required: false,
+        required: true,
       },
     },
     schemeType: {
@@ -63,7 +63,7 @@ const scheme: FormSchema = {
       props: {
         name: "schemeType",
         label: "Scheme Type",
-        required: false,
+        required: true,
         // isMulti: true,
         isClearable: true,
       },
@@ -75,7 +75,7 @@ const scheme: FormSchema = {
       props: {
         name: "schemeGroup",
         label: "Scheme Group",
-        required: false,
+        required: true,
         // isMulti: true,
         isClearable: true,
       },

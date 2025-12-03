@@ -52,7 +52,7 @@ const Wrapper = ({
   backLinkState,
   backButtonName,
   props,
-  subheaderstyle,
+  // subheaderstyle,
   showFilters = true,
   importButtonName,
   extralink,
@@ -69,6 +69,7 @@ const Wrapper = ({
     basePath === "dynamictable" ||
     basePath === "graphicalRepresentation" ||
     basePath === "discountPage" ||
+    basePath === "stock-comparison" ||
     basePath === ""
       ? "container-fluid"
       : "page-wrapper";
@@ -257,6 +258,7 @@ const Wrapper = ({
             basePath === "dynamictable" ||
             basePath === "discountPage" ||
             basePath === "graphicalRepresentation" ||
+            basePath === "stock-comparison" ||
             basePath === "") &&
           ""
         }`}

@@ -7,6 +7,7 @@ import Phase3Page from "../feature-modules/phase3";
 import GraphicalRepresentation from "../feature-modules/phase3/graphicalRepresentation";
 import SchemePage from "../feature-modules/phase3/schemePage";
 import DiscountPage from "../feature-modules/phase3/DiscountApply";
+import StockComparison from "../feature-modules/phase3/StockComparison";
 
 const DynamicPage = React.lazy(() => import("../feature-modules/dynamicpages"));
 const Phse3DynamicTable = React.lazy(
@@ -92,18 +93,17 @@ export const pagesRoute = [
     ),
     route: Route,
   },
-  // {
-  //   id: 7,
-  //   path: routes.graphical,
-  //   name: "Graphical",
-  //   element: (
-  //     <Suspense fallback={<div>Loading...</div>}>
-  //       {/* <Dashboard /> */}
-  //       <GraphicalRepresentation />
-  //     </Suspense>
-  //   ),
-  //   route: Route,
-  // },
+  {
+    id: 9,
+    path: routes.stockComparison,
+    name: "Stock Comparison",
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <StockComparison/>
+      </Suspense>
+    ),
+    route: Route,
+  },
   {
     id: 8,
     path: routes.dynamictable,

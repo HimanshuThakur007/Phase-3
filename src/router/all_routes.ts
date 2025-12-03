@@ -1,3 +1,5 @@
+
+
 export const all_routes = {
   dashboard: "/",
   summries: "/summaries",
@@ -7,5 +9,6 @@ export const all_routes = {
   dynamicpage: "/RepOpt/:id",
   dynamiclist: "/RepList/:id",
   schemes:"/schemes_display",
-  discountPage:"/discountPage"
+  discountPage:"/discountPage",
+  stockComparison:"/stock-comparison",
 };

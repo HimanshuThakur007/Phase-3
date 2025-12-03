@@ -68,7 +68,7 @@ const SchemePage: React.FC = () => {
   const savedSchemes = useSelector(
     (state: any) => state.phase3?.savedSchemes ?? []
   );
-  const loading = useSelector((state: any) => state.phase3?.loading ?? false);
+  // const loading = useSelector((state: any) => state.phase3?.loading ?? false);
   const activeTab = useSelector(
     (state: any) => state.phase3?.activeTab ?? "department"
   );
@@ -298,7 +298,7 @@ const SchemePage: React.FC = () => {
       filters: activeFiltersJson,
     };
 
-    console.log("payload", payload);
+    console.log("payload-json", payload);
 
     try {
       console.log("payload", payload);

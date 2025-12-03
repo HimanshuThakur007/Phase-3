@@ -1,64 +1,64 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import ImageWithBasePath from "../../common/component/ImageWithBasePath";
 import { clearPersistedStorage, persistor, RootState } from "../../redux/store";
-import { ArrowLeft, RefreshCcw, Settings } from "react-feather";
+import { ArrowLeft } from "react-feather";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import {
-  setSubDashboardData,
-  setSubDashboardMapData,
-  setSubDashboardTopCategoryData,
-  setSubDashboardTopCustData,
-  setSubDashboardTopProductData,
-  setSubDashboardTopSalesManData,
-  setSubDashboardTopStateData,
-} from "../../redux/subDashboardSlice";
-import {
-  fetchDashboardData,
-  getGenericSubDashboardData,
-} from "../../feature-modules/dashboard/dashboardapi";
-import useFetch from "../../hooks/useFetch";
-import {
-  setDashboardAmountPayData,
-  setDashboardAmountRecData,
-  setDashboardCashAndBankData,
-  setDashboardCriticalData,
-  setDashboardData,
-  setDashboardSOPOData,
-  setDashboardSpData,
-  setDashExpenseCardData,
-} from "../../redux/dashboardSlice";
-import CenteredLoader from "../../common/component/CenteredLoader";
-import { all_routes } from "../../router/all_routes";
-import { closeModal, openModal } from "../../redux/modalSlice";
-import ResetPasswordModal from "../../feature-modules/authentication/passwordreset";
-import { useApiHandler } from "../../common/utils/customapiHandler";
+// import { useDispatch } from "react-redux";
+// import {
+//   setSubDashboardData,
+//   setSubDashboardMapData,
+//   setSubDashboardTopCategoryData,
+//   setSubDashboardTopCustData,
+//   setSubDashboardTopProductData,
+//   setSubDashboardTopSalesManData,
+//   setSubDashboardTopStateData,
+// } from "../../redux/subDashboardSlice";
+// import {
+//   fetchDashboardData,
+//   getGenericSubDashboardData,
+// } from "../../feature-modules/dashboard/dashboardapi";
+// import useFetch from "../../hooks/useFetch";
+// import {
+//   setDashboardAmountPayData,
+//   setDashboardAmountRecData,
+//   setDashboardCashAndBankData,
+//   setDashboardCriticalData,
+//   setDashboardData,
+//   setDashboardSOPOData,
+//   setDashboardSpData,
+//   setDashExpenseCardData,
+// } from "../../redux/dashboardSlice";
+// import CenteredLoader from "../../common/component/CenteredLoader";
+// import { all_routes } from "../../router/all_routes";
+// import { closeModal, openModal } from "../../redux/modalSlice";
+// import ResetPasswordModal from "../../feature-modules/authentication/passwordreset";
+// import { useApiHandler } from "../../common/utils/customapiHandler";
 
 const Header: React.FC = () => {
-  const { submitHandler } = useApiHandler();
+  // const { submitHandler } = useApiHandler();
   const location = useLocation();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const [toggle, setToggle] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const { decryptedData } = useSelector((state: RootState) => state.authData);
   // console.log("DecData from Header", decryptedData);
-  const { UserName, CompnayName, CompCode, FinYear, DBRight, ID, UserMRight } =
-    decryptedData || {};
+  // const { UserName, CompnayName, CompCode, FinYear, ID } =
+  //   decryptedData || {};
   const { Caption } = location?.state || {};
   const pathname = location.pathname;
   const { navigationTranData } = useSelector(
     (state: RootState) => state.transidebar
   );
   // console.log("TransideBar", navigationTranData);
-  const callFetch = useFetch();
+  // const callFetch = useFetch();
   const isElementVisible = (element: HTMLElement): boolean => {
     return element.offsetWidth > 0 || element.offsetHeight > 0;
   };
-  const routes = all_routes;
+  // const routes = all_routes;
   const slideDownSubmenu = (): void => {
     const subdropPlusUl = document.getElementsByClassName("subdrop");
     Array.from(subdropPlusUl).forEach((element) => {
@@ -199,131 +199,131 @@ const Header: React.FC = () => {
     }
   };
 
-  const refreshHandler = async (
-    e: React.MouseEvent<HTMLAnchorElement>
-  ): Promise<void> => {
-    e.preventDefault();
-    const value = Number(localStorage.getItem("dashboardToggleValue"));
-    console.log("value", value);
-    let VchType = UserMRight === 4 ? 9 : UserMRight === 5 ? 2 : 0;
-    const storedValue = localStorage.getItem("selectedValue");
-    console.log("storedValue", storedValue);
-    let MasterCode = 0;
-    if (
-      (storedValue && UserMRight === 4) ||
-      (storedValue && UserMRight === 5)
-    ) {
-      try {
-        const parsedValue = JSON.parse(storedValue);
-        MasterCode = parsedValue?.value || 0;
-      } catch (error) {
-        console.error("Error parsing selectedValue from localStorage:", error);
-      }
-    }
-    const dashboardsubCalls = [
-      {
-        endpoint: `Report/GetCompanySubDashBoardOSChartData`,
-        setter: setSubDashboardData,
-      },
-      {
-        endpoint: `Report/GetCompanySubDashBoardTopCustomers`,
-        setter: setSubDashboardTopCustData,
-      },
-      {
-        endpoint: "Report/GetCompanySubDashBoardTopSalesman",
-        setter: setSubDashboardTopSalesManData,
-      },
-      {
-        endpoint: `Report/GetCompanySubDashBoardTopStates`,
-        setter: setSubDashboardTopStateData,
-      },
-      {
-        endpoint: `Report/GetCompanySubDashBoardTopProduct`,
-        setter: setSubDashboardTopProductData,
-      },
-      {
-        endpoint: "Report/GetCompanySubDashBoardTopCategory",
-        setter: setSubDashboardTopCategoryData,
-      },
-      {
-        endpoint: `Report/GetCompanySubDashBoardMapData`,
-        setter: setSubDashboardMapData,
-      },
-    ];
+  // const refreshHandler = async (
+  //   e: React.MouseEvent<HTMLAnchorElement>
+  // ): Promise<void> => {
+  //   e.preventDefault();
+  //   const value = Number(localStorage.getItem("dashboardToggleValue"));
+  //   console.log("value", value);
+  //   let VchType = UserMRight === 4 ? 9 : UserMRight === 5 ? 2 : 0;
+  //   const storedValue = localStorage.getItem("selectedValue");
+  //   console.log("storedValue", storedValue);
+  //   let MasterCode = 0;
+  //   if (
+  //     (storedValue && UserMRight === 4) ||
+  //     (storedValue && UserMRight === 5)
+  //   ) {
+  //     try {
+  //       const parsedValue = JSON.parse(storedValue);
+  //       MasterCode = parsedValue?.value || 0;
+  //     } catch (error) {
+  //       console.error("Error parsing selectedValue from localStorage:", error);
+  //     }
+  //   }
+  //   const dashboardsubCalls = [
+  //     {
+  //       endpoint: `Report/GetCompanySubDashBoardOSChartData`,
+  //       setter: setSubDashboardData,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanySubDashBoardTopCustomers`,
+  //       setter: setSubDashboardTopCustData,
+  //     },
+  //     {
+  //       endpoint: "Report/GetCompanySubDashBoardTopSalesman",
+  //       setter: setSubDashboardTopSalesManData,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanySubDashBoardTopStates`,
+  //       setter: setSubDashboardTopStateData,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanySubDashBoardTopProduct`,
+  //       setter: setSubDashboardTopProductData,
+  //     },
+  //     {
+  //       endpoint: "Report/GetCompanySubDashBoardTopCategory",
+  //       setter: setSubDashboardTopCategoryData,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanySubDashBoardMapData`,
+  //       setter: setSubDashboardMapData,
+  //     },
+  //   ];
 
-    for (const call of dashboardsubCalls) {
-      await getGenericSubDashboardData(
-        call.endpoint,
-        ID,
-        CompCode,
-        FinYear,
-        VchType,
-        MasterCode,
-        value,
-        dispatch,
-        call.setter,
-        callFetch as any,
-        setLoading
-      );
-    }
+  //   for (const call of dashboardsubCalls) {
+  //     await getGenericSubDashboardData(
+  //       call.endpoint,
+  //       ID,
+  //       CompCode,
+  //       FinYear,
+  //       VchType,
+  //       MasterCode,
+  //       value,
+  //       dispatch,
+  //       call.setter,
+  //       callFetch as any,
+  //       setLoading
+  //     );
+  //   }
 
-    const dashboardCalls: any = [
-      {
-        endpoint: "Report/GetCompanyDashBoardOtherData",
-        setter: setDashboardData,
-      },
-      {
-        endpoint: "Report/GetCompanyDashBoardExpenseData",
-        setter: setDashExpenseCardData,
-      },
-      {
-        endpoint: `Report/GetCompanyDashBoardSpData`,
-        setter: setDashboardSpData,
-      },
-      {
-        endpoint: "Report/GetCompanyDashBoardCriticalLData",
-        setter: setDashboardCriticalData,
-      },
-      {
-        endpoint: `Report/GetCompanyDashBoardAgeingFifoData`,
-        setter: setDashboardAmountRecData,
-        RType: 1,
-      },
-      {
-        endpoint: `Report/GetCompanyDashBoardAgeingFifoData`,
-        setter: setDashboardAmountPayData,
-        RType: 2,
-      },
-      {
-        endpoint: `Report/GetCompanyDashBoardSOPODATA`,
-        setter: setDashboardSOPOData,
-      },
-      {
-        endpoint: "Report/GetCompanyDashBoardBankCashBData",
-        setter: setDashboardCashAndBankData,
-      },
-    ];
-    let userTypeID = UserMRight === 4 || UserMRight === 5 ? UserMRight : 0;
-    await dashboardCalls.forEach((call: any) =>
-      fetchDashboardData({
-        UserID: ID,
-        CompCode: CompCode!,
-        FinYear: FinYear!,
-        VchType,
-        MasterCode,
-        userTypeID,
-        endpoint: call.endpoint,
-        dispatch,
-        setter: call.setter,
-        callFetch,
-        RType: call.RType,
-        setLoading,
-      }).catch((error) =>
-        console.error(`Error in fetching data from ${call.endpoint}:`, error)
-      )
-    );
-    setLoading(false);
-  };
+  //   const dashboardCalls: any = [
+  //     {
+  //       endpoint: "Report/GetCompanyDashBoardOtherData",
+  //       setter: setDashboardData,
+  //     },
+  //     {
+  //       endpoint: "Report/GetCompanyDashBoardExpenseData",
+  //       setter: setDashExpenseCardData,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanyDashBoardSpData`,
+  //       setter: setDashboardSpData,
+  //     },
+  //     {
+  //       endpoint: "Report/GetCompanyDashBoardCriticalLData",
+  //       setter: setDashboardCriticalData,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanyDashBoardAgeingFifoData`,
+  //       setter: setDashboardAmountRecData,
+  //       RType: 1,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanyDashBoardAgeingFifoData`,
+  //       setter: setDashboardAmountPayData,
+  //       RType: 2,
+  //     },
+  //     {
+  //       endpoint: `Report/GetCompanyDashBoardSOPODATA`,
+  //       setter: setDashboardSOPOData,
+  //     },
+  //     {
+  //       endpoint: "Report/GetCompanyDashBoardBankCashBData",
+  //       setter: setDashboardCashAndBankData,
+  //     },
+  //   ];
+  //   let userTypeID = UserMRight === 4 || UserMRight === 5 ? UserMRight : 0;
+  //   await dashboardCalls.forEach((call: any) =>
+  //     fetchDashboardData({
+  //       UserID: ID,
+  //       CompCode: CompCode!,
+  //       FinYear: FinYear!,
+  //       VchType,
+  //       MasterCode,
+  //       userTypeID,
+  //       endpoint: call.endpoint,
+  //       dispatch,
+  //       setter: call.setter,
+  //       callFetch,
+  //       RType: call.RType,
+  //       setLoading,
+  //     }).catch((error) =>
+  //       console.error(`Error in fetching data from ${call.endpoint}:`, error)
+  //     )
+  //   );
+  //   setLoading(false);
+  // };
 
   const clearAllCaches = async () => {
     try {
@@ -382,101 +382,101 @@ const Header: React.FC = () => {
   if (exclusionArray.includes(location.pathname)) {
     return null;
   }
-  const handleFormSave = useCallback(
-    async (data: any) => {
-      try {
-        let payload = {
-          UserID: Number(ID),
-          PWD: data.password,
-        };
+  // const handleFormSave = useCallback(
+  //   async (data: any) => {
+  //     try {
+  //       let payload = {
+  //         UserID: Number(ID),
+  //         PWD: data.password,
+  //       };
 
-        console.log("Master-Json", JSON.stringify(payload));
-        let url = `Report/ChangePassword?CompCode=${CompCode}&FY=${FinYear}`;
-        await submitHandler({
-          url: url,
-          method: "POST",
-          data: payload,
-          setLoading: () => { },
-          onSuccess: () => {
-            // form.reset();
-            dispatch(closeModal());
-            navigate("/signin");
-            sessionStorage.clear();
-            persistor.purge();
-            // tableListHandler(parseInt(id));
-          },
-          onError: (error: unknown) => {
-            console.error("Error saving form:", error);
-            // updateState({ loading: false });
-          },
-        });
-      } catch (error) {
-        console.error("Error saving form:", error);
-        // updateState({ loading: false });
-      }
-    },
-    [dispatch]
-  );
-  const handleFormCancel = useCallback(() => {
-    // form.reset();
-    dispatch(closeModal());
-  }, [dispatch]);
+  //       console.log("Master-Json", JSON.stringify(payload));
+  //       let url = `Report/ChangePassword?CompCode=${CompCode}&FY=${FinYear}`;
+  //       await submitHandler({
+  //         url: url,
+  //         method: "POST",
+  //         data: payload,
+  //         setLoading: () => { },
+  //         onSuccess: () => {
+  //           // form.reset();
+  //           // dispatch(closeModal());
+  //           navigate("/signin");
+  //           sessionStorage.clear();
+  //           persistor.purge();
+  //           // tableListHandler(parseInt(id));
+  //         },
+  //         onError: (error: unknown) => {
+  //           console.error("Error saving form:", error);
+  //           // updateState({ loading: false });
+  //         },
+  //       });
+  //     } catch (error) {
+  //       console.error("Error saving form:", error);
+  //       // updateState({ loading: false });
+  //     }
+  //   },
+  //   [dispatch]
+  // );
+  // const handleFormCancel = useCallback(() => {
+  //   // form.reset();
+  //   // dispatch(closeModal());
+  // }, [dispatch]);
 
-  const formButtons = useMemo(
-    () => [
-      { label: "Cancel", variant: "secondary", onClick: handleFormCancel },
-      {
-        label: "Save",
-        variant: "primary",
-        onClick: () => {
-          // Trigger form submission via onSave
-          const modalContent = document.querySelector(".reusable-modal");
-          if (modalContent) {
-            const form = modalContent.querySelector("form");
-            if (form) {
-              form.dispatchEvent(
-                new Event("submit", { cancelable: true, bubbles: true })
-              );
-            }
-          }
-        },
-      },
-    ],
-    [handleFormCancel, handleFormSave]
-  );
+  // const formButtons = useMemo(
+  //   () => [
+  //     { label: "Cancel", variant: "secondary", onClick: handleFormCancel },
+  //     {
+  //       label: "Save",
+  //       variant: "primary",
+  //       onClick: () => {
+  //         // Trigger form submission via onSave
+  //         const modalContent = document.querySelector(".reusable-modal");
+  //         if (modalContent) {
+  //           const form = modalContent.querySelector("form");
+  //           if (form) {
+  //             form.dispatchEvent(
+  //               new Event("submit", { cancelable: true, bubbles: true })
+  //             );
+  //           }
+  //         }
+  //       },
+  //     },
+  //   ],
+  //   [handleFormCancel, handleFormSave]
+  // );
 
-  const handleCommonModal = useCallback(() => {
-    dispatch(
-      openModal({
-        title: "Reset Password",
-        content: (
-          <ResetPasswordModal
-            onSubmit={handleFormSave}
-            onSave={() => {
-              // Trigger form submission
-              const modalContent = document.querySelector(".reusable-modal");
-              if (modalContent) {
-                const form = modalContent.querySelector("form");
-                if (form) {
-                  form.dispatchEvent(
-                    new Event("submit", { cancelable: true, bubbles: true })
-                  );
-                }
-              }
-            }}
-          />
-        ),
-        size: "lg",
-        backdrop: "static",
-        footerButtons: formButtons,
-        className: "reusable-modal",
-      })
-    );
-  }, [dispatch]);
+  // const handleCommonModal = useCallback(() => {
+  //   dispatch(
+  //     openModal({
+  //       title: "Reset Password",
+  //       content: (
+  //         <ResetPasswordModal
+  //           onSubmit={handleFormSave}
+  //           onSave={() => {
+  //             // Trigger form submission
+  //             const modalContent = document.querySelector(".reusable-modal");
+  //             if (modalContent) {
+  //               const form = modalContent.querySelector("form");
+  //               if (form) {
+  //                 form.dispatchEvent(
+  //                   new Event("submit", { cancelable: true, bubbles: true })
+  //                 );
+  //               }
+  //             }
+  //           }}
+  //         />
+  //       ),
+  //       size: "lg",
+  //       backdrop: "static",
+  //       footerButtons: formButtons,
+  //       className: "reusable-modal",
+  //     })
+  //   );
+  // }, [dispatch]);
 
   return (
     <div className="header">
-      {loading && <CenteredLoader />}
+      {/* {loading && <CenteredLoader />} */}
       {/* Logo */}
       <div
         className={`header-left ${toggle ? "" : "active"}`}
@@ -532,7 +532,7 @@ const Header: React.FC = () => {
       <ul className="nav user-menu">
         {/* Search */}
         <li className="nav-item nav-searchinputs">
-          <h5>{CompnayName}</h5>
+          {/* <h5>{CompnayName}</h5> */}
           <h5 className="text-muted">{Caption || ""}</h5>
         </li>
         {/* /Search */}
@@ -574,13 +574,13 @@ const Header: React.FC = () => {
           </li>
         )}
         {/* /Flag */}
-        {pathname === "/" && DBRight === 1 && (
+        {/* {pathname === "/" && DBRight === 1 && (
           <li className="nav-item nav-item-box">
             <Link to="#" onClick={refreshHandler}>
               <RefreshCcw />
             </Link>
           </li>
-        )}
+        )} */}
 
         <li className="nav-item nav-item-box">
           <Link
@@ -625,7 +625,7 @@ const Header: React.FC = () => {
                 />
               </span>
               <span className="user-detail">
-                <span className="user-name">{UserName}</span>
+                {/* <span className="user-name">{UserName}</span> */}
                 <span className="user-role"></span>
               </span>
             </span>
@@ -640,14 +640,14 @@ const Header: React.FC = () => {
                 <ArrowLeft />
                 Company
               </Link>
-              <Link
+              {/* <Link
                 className="dropdown-item setting pb-0"
                 to="#"
                 onClick={handleCommonModal}
               >
                 <Settings />
                 Reset Password
-              </Link>
+              </Link> */}
               <Link
                 className="dropdown-item logout pb-0"
                 to="/signin"
@@ -688,20 +688,20 @@ const Header: React.FC = () => {
           >
             Company
           </Link>
-          <Link to={routes.order} className="dropdown-item">
+          {/* <Link to={routes.order} className="dropdown-item">
             Orders
-          </Link>
-          <Link to={routes.receipt} className="dropdown-item">
+          </Link> */}
+          {/* <Link to={routes.receipt} className="dropdown-item">
             {" "}
             Receipt
-          </Link>
-          <Link
+          </Link> */}
+          {/* <Link
             className="dropdown-item setting pb-0"
             to="#"
             onClick={handleCommonModal}
           >
             Reset Password
-          </Link>
+          </Link> */}
           <Link
             className="dropdown-item"
             to="signin"

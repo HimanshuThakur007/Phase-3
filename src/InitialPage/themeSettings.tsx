@@ -131,78 +131,6 @@ const ThemeSettings: React.FC = () => {
     return basePayload;
   }, [form, basePath, id, selectedDepartment, selectedBranch, itemCode]);
 
-  // Fetch summary data
-
-  //   const fetchData = useCallback(
-  //   async (payload: any) => {
-  //     dispatch(setLoading(true));
-  //     dispatch(setError(null));
-
-  //     // Reset all data
-  //     dispatch(setSummaries([]));
-  //     dispatch(setDepartmentSummaries([]));
-  //     dispatch(setItemSummaries([]));
-  //     dispatch(setComparisonSummaries([])); // Reset comparison data too
-
-  //     try {
-  //       // Run all 4 API calls in parallel for speed
-  //       const [
-  //         branchRes,
-  //         deptRes,
-  //         itemRes,
-  //         comparisonRes,
-  //       ] = await Promise.all([
-  //         callFetch<{ status: string; summaries?: any[] }>("hbt-summary", "POST", payload).catch(() => ({ got: null })),
-  //         callFetch<any>("hbt-summary-department", "POST", payload).catch(() => ({ got: null })),
-  //         callFetch<any>("hbt-summary-item", "POST", payload).catch(() => ({ got: null })),
-  //         callFetch<any>("hbt-summary-item-schemes", "POST", payload).catch(() => ({ got: null })),
-  //       ]);
-
-  //       // 1. Branch Summary
-  //       const branches = branchRes.got?.status === "ok" ? branchRes.got.summaries || [] : [];
-  //       dispatch(setSummaries(branches));
-
-  //       // 2. Department Summary
-  //       const deptData = deptRes.got;
-  //       const deptArr = Array.isArray(deptData)
-  //         ? deptData
-  //         : deptData?.departments ??
-  //           deptData?.department_summaries ??
-  //           (deptData?.status === "ok" ? deptData.summaries || deptData.data || [] : []);
-  //       dispatch(setDepartmentSummaries(deptArr));
-
-  //       // 3. Item Summary (old one)
-  //       const itemData = itemRes.got;
-  //       const itemArr = Array.isArray(itemData)
-  //         ? itemData
-  //         : itemData?.status === "ok"
-  //         ? itemData.summaries || []
-  //         : [];
-  //       dispatch(setItemSummaries(itemArr));
-
-  //       // 4. NEW: Item + Scheme Summary (with full scheme details + both stocks)
-  //       const comparisonData = comparisonRes.got;
-  //       if (comparisonData?.status === "ok" && Array.isArray(comparisonData.summaries)) {
-  //         dispatch(setComparisonSummaries(comparisonData.summaries));
-  //       } else if (comparisonData?.status === "ok" && comparisonData.data) {
-  //         // fallback if structure is { data: [...] }
-  //         const arr = Array.isArray(comparisonData.data) ? comparisonData.data : [];
-  //         dispatch(setComparisonSummaries(arr));
-  //       } else {
-  //         // API failed or no data
-  //         dispatch(setComparisonSummaries([]));
-  //       }
-
-  //     } catch (e: any) {
-  //       const msg = e?.message || "Failed to load data";
-  //       dispatch(setError(msg));
-  //       console.error("fetchData error:", msg, e);
-  //     } finally {
-  //       dispatch(setLoading(false));
-  //     }
-  //   },
-  //   [callFetch, dispatch]
-  // );
   const fetchData = useCallback(
     async (payload: any) => {
       dispatch(setLoading(true));
@@ -213,7 +141,7 @@ const ThemeSettings: React.FC = () => {
       dispatch(setDepartmentSummaries([]));
       dispatch(setItemSummaries([]));
       dispatch(setComparisonSummaries([]));
-      dispatch(setBranchSchemeSummaries([])); // Add this if you have a reducer for it
+      dispatch(setBranchSchemeSummaries([]));
 
       try {
         // Run all 5 API calls in parallel
@@ -240,7 +168,7 @@ const ThemeSettings: React.FC = () => {
           ),
           callFetch<any>("hbt-summary-branch-schemes", "POST", payload).catch(
             () => ({ got: null })
-          ), // New one
+          ),
         ]);
 
         // 1. Branch Summary
@@ -308,11 +236,529 @@ const ThemeSettings: React.FC = () => {
   );
   // Fetch detail data
 
+  // const fetchDetail = useCallback(
+  //   async (payload: any) => {
+  //     dispatch(clearData());
+  //     dispatch(fetchStart());
+  //     console.log("Functions running");
+  //     try {
+  //       const { got } = await callFetch<any>("get-hbtsync-data", "POST", {
+  //         branchCode: selectedBranch || payload.branchCode || "",
+  //         department: selectedDepartment || payload.department || "",
+  //         itemCode: itemCode || payload.itemCode || "",
+  //         ...payload,
+  //       });
+
+  //       let processed: any[] = [];
+
+  //       // Helper: safely parse numeric-like strings to numbers, otherwise return null
+  //       const safeNumber = (v: any) => {
+  //         if (v === null || v === undefined || v === "") return null;
+  //         if (typeof v === "number") return Number.isFinite(v) ? v : null;
+  //         const s = String(v).replace(/,/g, "").trim();
+  //         if (s === "") return null;
+  //         const n = Number(s);
+  //         return Number.isFinite(n) ? n : null;
+  //       };
+
+  //       // Canonical mapping: for each canonical key list possible source keys (ordered)
+  //       const FIELD_MAP: Record<string, string[]> = {
+  //         // branch-level
+  //         Branch_Code: [
+  //           "Branch_Code",
+  //           "branchCode",
+  //           "branch_code",
+  //           "Branch Code",
+  //         ],
+  //         Branch_Name: [
+  //           "Branch_Name",
+  //           "branchName",
+  //           "branch_name",
+  //           "Branch Name",
+  //         ],
+  //         Item_Code: ["Item_Code", "item_code", "Item Code", "itemCode"],
+  //         Item_Name: [
+  //           "Item_Name",
+  //           "item_name",
+  //           "ItemName",
+  //           "itemName",
+  //           "itemname",
+  //         ],
+  //         category: [
+  //           "category",
+  //           "Category",
+  //           "item_category",
+  //           "item_cat",
+  //           "cat",
+  //         ],
+  //         subcategory: [
+  //           "subcategory",
+  //           "sub_category",
+  //           "SubCategory",
+  //           "subcat",
+  //           "sub_category_name",
+  //         ],
+  //         description: [
+  //           "description",
+  //           "item_desc",
+  //           "item_description",
+  //           "Item_Desc",
+  //           "desc",
+  //         ],
+  //         Department: [
+  //           "Department",
+  //           "department",
+  //           "item_department",
+  //           "Item Department",
+  //         ],
+  //         item_sub_category: [
+  //           "item_sub_category",
+  //           "sub_category",
+  //           "subCategory",
+  //           "Item_Sub_Category",
+  //           "itemSubCategory",
+  //         ],
+  //         item_status: [
+  //           "item_status",
+  //           "status",
+  //           "Item_Status",
+  //           "ItemStatus",
+  //           "active_inactive",
+  //           "is_active",
+  //         ],
+  //         exp_imp_sur: ["exp_imp_sur", "expImpSur", "exp_imp", "exp_imp_surr"],
+
+  //         // numeric-ish
+  //         Site_Qtys: [
+  //           "Site_Qtys",
+  //           "site_qty",
+  //           "site_qtys",
+  //           "Site_Qtys",
+  //           "total_site_qty",
+  //         ],
+  //         Total_Sale_Qty: [
+  //           "Total_Sale_Qty",
+  //           "total_sale_qty",
+  //           "TotalSaleQty",
+  //           "Total Sale Qty",
+  //         ],
+  //         Total_Sale_Val: [
+  //           "Total_Sale_Val",
+  //           "total_sale_val",
+  //           "TotalSaleVal",
+  //           "Total Sale Val",
+  //         ],
+  //         Local_HBT_Class: [
+  //           "Local_HBT_Class",
+  //           "local_hbt_class",
+  //           "Local HBT Class",
+  //         ],
+  //         Global_HBT_Class: [
+  //           "Global_HBT_Class",
+  //           "global_hbt_class",
+  //           "Global HBT Class",
+  //         ],
+  //         Stock_Remarks: ["Stock_Remarks", "stock_remarks", "Stock Remarks"],
+  //         Stock_Days_Diff: [
+  //           "Stock_Days_Diff",
+  //           "stock_days_diff",
+  //           "Stock Days Diff",
+  //         ],
+  //         Stock_Bucket: ["Stock_Bucket", "stock_bucket", "Stock Bucket"],
+  //         Sales_Bucket: ["Sales_Bucket", "sales_bucket", "Sales Bucket"],
+  //         Str_Stk_Sp_Value: [
+  //           "Str_Stk_Sp_Value",
+  //           "str_stk_sp_value",
+  //           "Str Stk Sp Value",
+  //         ],
+  //         Tax_Per_Qty: ["Tax_Per_Qty", "tax_per_qty", "Tax Per Qty"],
+  //         Mrgn_Per_Qty: ["Mrgn_Per_Qty", "mrgn_per_qty", "Mrgn Per Qty"],
+  //         Ttl_Mrgn: ["Ttl_Mrgn", "ttl_mrgn", "Ttl Mrgn", "Total_Mrgn"],
+  //         scheme_type: ["scheme_type", "schemeType", "Scheme_Type"],
+  //         scheme_group: ["scheme_group", "schemeGroup", "Scheme_Group"],
+  //         state: ["state", "State", "branch_state", "branchState"],
+  //         balance_bin_stock: ["balance_bin_stock", "Balance Bin Stock"],
+  //         po_qty:["po_qty", "Po Qty"]
+  //         // dates / timestamps
+  //         // process_date: ["process_date", "processDate", "process date"],
+  //         // uploaded_on: ["uploaded_on", "uploadedOn", "uploaded"],
+  //         // created_at: ["created_at", "createdAt"],
+  //         // updated_at: ["updated_at", "updatedAt"],
+
+  //         // new item metadata
+  //       };
+
+  //       // Helper: pull first present field from object using FIELD_MAP (case-insensitive)
+  //       const extractField = (obj: any, canonical: string): any => {
+  //         const candidates = FIELD_MAP[canonical] ?? [canonical];
+  //         if (!obj) return null;
+  //         for (const k of candidates) {
+  //           if (Object.prototype.hasOwnProperty.call(obj, k)) return obj[k];
+  //         }
+  //         // case-insensitive fallback
+  //         const objKeys = Object.keys(obj);
+  //         for (const k of candidates) {
+  //           const fk = objKeys.find(
+  //             (kk) => kk.toLowerCase() === String(k).toLowerCase()
+  //           );
+  //           if (fk) return obj[fk];
+  //         }
+  //         return null;
+  //       };
+
+  //       // Helper: normalize a single item object
+  //       const normalizeItem = (it: any, parentBranch?: any) => {
+  //         const normalized: Record<string, any> = {
+  //           Item_Code: extractField(it, "Item_Code"),
+  //           Item_Name: extractField(it, "Item_Name"),
+  //           Department: extractField(it, "Department"),
+
+  //           // new metadata
+  //           category: extractField(it, "category"),
+  //           subcategory: extractField(it, "subcategory"),
+  //           description: extractField(it, "description"),
+  //           Branch_Code:
+  //             extractField(it, "Branch_Code") ??
+  //             (parentBranch ? extractField(parentBranch, "Branch_Code") : null),
+  //           Branch_Name:
+  //             extractField(it, "Branch_Name") ??
+  //             (parentBranch ? extractField(parentBranch, "Branch_Name") : null),
+  //           state: extractField(it, "state"),
+  //           item_status:
+  //             extractField(it, "item_status") ?? extractField(it, "status"),
+  //           exp_imp_sur: extractField(it, "exp_imp_sur"),
+
+  //           // numeric-ish fields coerced where possible
+  //           Site_Qtys: safeNumber(extractField(it, "Site_Qtys")),
+  //           Total_Sale_Qty: safeNumber(extractField(it, "Total_Sale_Qty")),
+  //           Total_Sale_Val: safeNumber(extractField(it, "Total_Sale_Val")),
+  //           Local_HBT_Class: extractField(it, "Local_HBT_Class"),
+  //           Global_HBT_Class: extractField(it, "Global_HBT_Class"),
+  //           Stock_Remarks: extractField(it, "Stock_Remarks"),
+  //           Stock_Days_Diff: safeNumber(extractField(it, "Stock_Days_Diff")),
+  //           Stock_Bucket: extractField(it, "Stock_Bucket"),
+  //           Sales_Bucket: extractField(it, "Sales_Bucket"),
+  //           Str_Stk_Sp_Value: safeNumber(extractField(it, "Str_Stk_Sp_Value")),
+  //           Tax_Per_Qty: safeNumber(extractField(it, "Tax_Per_Qty")),
+  //           Mrgn_Per_Qty: safeNumber(extractField(it, "Mrgn_Per_Qty")),
+  //           Ttl_Mrgn: safeNumber(extractField(it, "Ttl_Mrgn")),
+  //           scheme_type: extractField(it, "scheme_type"),
+  //           scheme_group: extractField(it, "scheme_group"),
+  //           balance_bin_stock: extractField(it, "balance_bin_stock"),
+  //           po_qty:extractField(it, "po_qty")
+  //         };
+
+  //         return normalized;
+  //       };
+
+  //       // Helper: extract items array robustly from a branch object
+  //       const extractItemsFromBranch = (b: any) => {
+  //         if (!b) return [];
+  //         if (Array.isArray(b.items)) return b.items;
+  //         if (Array.isArray(b.Items)) return b.Items;
+  //         if (Array.isArray(b.ITEMS)) return b.ITEMS;
+  //         if (Array.isArray(b.ItemsList)) return b.ItemsList;
+  //         if (Array.isArray(b.itemsList)) return b.itemsList;
+  //         // some responses use "Items" inside root, some use "items" — check common wrappers
+  //         if (Array.isArray(b.Items)) return b.Items;
+  //         // fallback: if object itself looks like an item (has Item_Code) return as single-element array
+  //         const hasItemCode =
+  //           b &&
+  //           (b.Item_Code ||
+  //             b.item_code ||
+  //             b.ItemCode ||
+  //             b["Item Code"] ||
+  //             b.itemCode);
+  //         if (hasItemCode) return [b];
+  //         return [];
+  //       };
+
+  //       // Normalize depending on response shape (branched vs flat)
+  //       if (id === "2") {
+  //         // branched response expected: normalize branches, flatten items
+  //         const branches = Array.isArray(got)
+  //           ? got
+  //           : got?.departments ??
+  //             got?.summaries ??
+  //             got?.branches ??
+  //             (got?.items
+  //               ? Array.isArray(got.items)
+  //                 ? got.items
+  //                 : [got]
+  //               : []);
+
+  //         const items = (branches || []).flatMap((b: any) => {
+  //           const rawItems = extractItemsFromBranch(b);
+  //           return rawItems.map((it: any) => normalizeItem(it, b));
+  //         });
+
+  //         processed = itemCode
+  //           ? items.filter((it: any) =>
+  //               String(it.Item_Code ?? "")
+  //                 .toLowerCase()
+  //                 .includes(String(itemCode).toLowerCase())
+  //             )
+  //           : items;
+  //       } else {
+  //         // non-branch flow: expect array of items or wrapper shapes
+  //         const rawItems = Array.isArray(got)
+  //           ? got
+  //           : got?.departments ??
+  //             got?.department_summaries ??
+  //             (got?.status === "ok" ? got.summaries : []) ??
+  //             got?.items ??
+  //             [];
+
+  //         const arr = Array.isArray(rawItems) ? rawItems : [];
+  //         processed = arr.map((it: any) => normalizeItem(it));
+  //       }
+
+  //       // dispatch normalized data
+  //       dispatch(fetchSuccess(processed));
+  //     } catch (e: any) {
+  //       dispatch(fetchFailure(e?.message ?? "Failed to load detail data"));
+  //     }
+  //   },
+  //   [callFetch, dispatch, id, selectedBranch, selectedDepartment, itemCode]
+  // );
+
+  //   const fetchDetail = useCallback(
+  //   async (payload: any) => {
+  //     dispatch(clearData());
+  //     dispatch(fetchStart());
+  //     console.log("Functions running");
+  //     try {
+  //       const { got } = await callFetch<any>("get-hbtsync-data", "POST", {
+  //         branchCode: selectedBranch || payload.branchCode || "",
+  //         department: selectedDepartment || payload.department || "",
+  //         itemCode: itemCode || payload.itemCode || "",
+  //         ...payload,
+  //       });
+
+  //       let processed: any[] = [];
+
+  //       // Helper: safely parse numeric-like strings to numbers, otherwise return null
+  //       const safeNumber = (v: any) => {
+  //         if (v === null || v === undefined || v === "") return null;
+  //         if (typeof v === "number") return Number.isFinite(v) ? v : null;
+  //         const s = String(v).replace(/,/g, "").trim();
+  //         if (s === "") return null;
+  //         const n = Number(s);
+  //         return Number.isFinite(n) ? n : null;
+  //       };
+
+  //       // Canonical mapping: for each canonical key list possible source keys (ordered)
+  //       const FIELD_MAP: Record<string, string[]> = {
+  //         // branch-level
+  //         Branch_Code: ["Branch_Code", "branchCode", "branch_code", "Branch Code"],
+  //         Branch_Name: ["Branch_Name", "branchName", "branch_name", "Branch Name"],
+  //         Item_Code: ["Item_Code", "item_code", "Item Code", "itemCode"],
+  //         Item_Name: ["Item_Name", "item_name", "ItemName", "itemName", "itemname"],
+  //         category: ["category", "Category", "item_category", "item_cat", "cat"],
+  //         subcategory: [
+  //           "subcategory",
+  //           "sub_category",
+  //           "SubCategory",
+  //           "subcat",
+  //           "sub_category_name",
+  //         ],
+  //         description: ["description", "item_desc", "item_description", "Item_Desc", "desc"],
+  //         Department: ["Department", "department", "item_department", "Item Department"],
+  //         item_sub_category: [
+  //           "item_sub_category",
+  //           "sub_category",
+  //           "subCategory",
+  //           "Item_Sub_Category",
+  //           "itemSubCategory",
+  //         ],
+  //         item_status: [
+  //           "item_status",
+  //           "status",
+  //           "Item_Status",
+  //           "ItemStatus",
+  //           "active_inactive",
+  //           "is_active",
+  //         ],
+  //         exp_imp_sur: ["exp_imp_sur", "expImpSur", "exp_imp", "exp_imp_surr"],
+
+  //         // numeric-ish
+  //         Site_Qtys: ["Site_Qtys", "site_qty", "site_qtys", "Site_Qtys", "total_site_qty"],
+  //         Total_Sale_Qty: ["Total_Sale_Qty", "total_sale_qty", "TotalSaleQty", "Total Sale Qty"],
+  //         Total_Sale_Val: ["Total_Sale_Val", "total_sale_val", "TotalSaleVal", "Total Sale Val"],
+  //         Local_HBT_Class: ["Local_HBT_Class", "local_hbt_class", "Local HBT Class"],
+  //         Global_HBT_Class: ["Global_HBT_Class", "global_hbt_class", "Global HBT Class"],
+  //         Stock_Remarks: ["Stock_Remarks", "stock_remarks", "Stock Remarks"],
+  //         Stock_Days_Diff: ["Stock_Days_Diff", "stock_days_diff", "Stock Days Diff"],
+  //         Stock_Bucket: ["Stock_Bucket", "stock_bucket", "Stock Bucket"],
+  //         Sales_Bucket: ["Sales_Bucket", "sales_bucket", "Sales Bucket"],
+  //         Str_Stk_Sp_Value: ["Str_Stk_Sp_Value", "str_stk_sp_value", "Str Stk Sp Value"],
+  //         Tax_Per_Qty: ["Tax_Per_Qty", "tax_per_qty", "Tax Per Qty"],
+  //         Mrgn_Per_Qty: ["Mrgn_Per_Qty", "mrgn_per_qty", "Mrgn Per Qty"],
+  //         Ttl_Mrgn: ["Ttl_Mrgn", "ttl_mrgn", "Ttl Mrgn", "Total_Mrgn"],
+  //         scheme_type: ["scheme_type", "schemeType", "Scheme_Type"],
+  //         scheme_group: ["scheme_group", "schemeGroup", "Scheme_Group"],
+  //         state: ["state", "State", "branch_state", "branchState"],
+  //         balance_bin_stock: ["balance_bin_stock", "Balance Bin Stock", "balanceBinStock"],
+  //         po_qty: ["po_qty", "Po Qty", "poQty"],
+  //       };
+
+  //       // Helper: pull first present field from object using FIELD_MAP (case-insensitive)
+  //       const extractField = (obj: any, canonical: string): any => {
+  //         const candidates = FIELD_MAP[canonical] ?? [canonical];
+  //         if (!obj) return null;
+  //         for (const k of candidates) {
+  //           if (Object.prototype.hasOwnProperty.call(obj, k)) return obj[k];
+  //         }
+  //         // case-insensitive fallback
+  //         const objKeys = Object.keys(obj);
+  //         for (const k of candidates) {
+  //           const fk = objKeys.find((kk) => kk.toLowerCase() === String(k).toLowerCase());
+  //           if (fk) return obj[fk];
+  //         }
+  //         return null;
+  //       };
+
+  //       // Helper: normalize a single item object
+  //       const normalizeItem = (it: any, parentBranch?: any) => {
+  //         const normalized: Record<string, any> = {
+  //           Item_Code: extractField(it, "Item_Code"),
+  //           Item_Name: extractField(it, "Item_Name"),
+  //           Department: extractField(it, "Department"),
+
+  //           // new metadata
+  //           category: extractField(it, "category"),
+  //           subcategory: extractField(it, "subcategory"),
+  //           description: extractField(it, "description"),
+  //           Branch_Code:
+  //             extractField(it, "Branch_Code") ??
+  //             (parentBranch ? extractField(parentBranch, "Branch_Code") : null),
+  //           Branch_Name:
+  //             extractField(it, "Branch_Name") ??
+  //             (parentBranch ? extractField(parentBranch, "Branch_Name") : null),
+  //           state: extractField(it, "state"),
+  //           item_status: extractField(it, "item_status") ?? extractField(it, "status"),
+  //           exp_imp_sur: extractField(it, "exp_imp_sur"),
+
+  //           // numeric-ish fields coerced where possible
+  //           Site_Qtys: safeNumber(extractField(it, "Site_Qtys")),
+  //           Total_Sale_Qty: safeNumber(extractField(it, "Total_Sale_Qty")),
+  //           Total_Sale_Val: safeNumber(extractField(it, "Total_Sale_Val")),
+  //           Local_HBT_Class: extractField(it, "Local_HBT_Class"),
+  //           Global_HBT_Class: extractField(it, "Global_HBT_Class"),
+  //           Stock_Remarks: extractField(it, "Stock_Remarks"),
+  //           Stock_Days_Diff: safeNumber(extractField(it, "Stock_Days_Diff")),
+  //           Stock_Bucket: extractField(it, "Stock_Bucket"),
+  //           Sales_Bucket: extractField(it, "Sales_Bucket"),
+  //           Str_Stk_Sp_Value: safeNumber(extractField(it, "Str_Stk_Sp_Value")),
+  //           Tax_Per_Qty: safeNumber(extractField(it, "Tax_Per_Qty")),
+  //           Mrgn_Per_Qty: safeNumber(extractField(it, "Mrgn_Per_Qty")),
+  //           Ttl_Mrgn: safeNumber(extractField(it, "Ttl_Mrgn")),
+  //           scheme_type: extractField(it, "scheme_type"),
+  //           scheme_group: extractField(it, "scheme_group"),
+  //           balance_bin_stock: safeNumber(extractField(it, "balance_bin_stock")),
+  //           po_qty: safeNumber(extractField(it, "po_qty")),
+  //         };
+
+  //         return normalized;
+  //       };
+
+  //       // Helper: extract items array robustly from a branch object
+  //       const extractItemsFromBranch = (b: any) => {
+  //         if (!b) return [];
+  //         if (Array.isArray(b.items)) return b.items;
+  //         if (Array.isArray(b.Items)) return b.Items;
+  //         if (Array.isArray(b.ITEMS)) return b.ITEMS;
+  //         if (Array.isArray(b.ItemsList)) return b.ItemsList;
+  //         if (Array.isArray(b.itemsList)) return b.itemsList;
+  //         // fallback: if object itself looks like an item (has Item_Code) return as single-element array
+  //         const hasItemCode =
+  //           b &&
+  //           (b.Item_Code ||
+  //             b.item_code ||
+  //             b.ItemCode ||
+  //             b["Item Code"] ||
+  //             b.itemCode);
+  //         if (hasItemCode) return [b];
+  //         return [];
+  //       };
+
+  //       // parseCodes: normalize selected item code(s) from state or payload into array of lower-trimmed codes
+  //       const parseCodes = (raw: any): string[] => {
+  //         if (raw == null) return [];
+  //         if (Array.isArray(raw)) {
+  //           return raw
+  //             .map((x) => (x == null ? "" : String(x).trim()))
+  //             .filter((s) => s !== "")
+  //             .map((s) => s.toLowerCase());
+  //         }
+  //         // string path: accept comma-separated or single value
+  //         const asStr = String(raw);
+  //         const parts = asStr.split(",").map((p) => p.trim()).filter((p) => p !== "");
+  //         return parts.map((p) => p.toLowerCase());
+  //       };
+
+  //       // determine filter codes from: (itemCode state) || (payload.itemCode) || none
+  //       const filterCodes =
+  //         parseCodes(itemCode ?? payload?.itemCode ?? got?.applied_itemCode ?? null);
+
+  //       // Normalize depending on response shape (branched vs flat)
+  //       if (id === "2") {
+  //         // branched response expected: normalize branches, flatten items
+  //         const branches = Array.isArray(got)
+  //           ? got
+  //           : got?.departments ??
+  //             got?.summaries ??
+  //             got?.branches ??
+  //             (got?.items ? (Array.isArray(got.items) ? got.items : [got]) : []);
+
+  //         const items = (branches || []).flatMap((b: any) => {
+  //           const rawItems = extractItemsFromBranch(b);
+  //           return rawItems.map((it: any) => normalizeItem(it, b));
+  //         });
+
+  //         processed =
+  //           filterCodes.length > 0
+  //             ? items.filter((it: any) => {
+  //                 const code = String(it.Item_Code ?? "").toLowerCase().trim();
+  //                 return filterCodes.includes(code);
+  //               })
+  //             : items;
+  //       } else {
+  //         // non-branch flow: expect array of items or wrapper shapes
+  //         const rawItems = Array.isArray(got)
+  //           ? got
+  //           : got?.departments ??
+  //             got?.department_summaries ??
+  //             (got?.status === "ok" ? got.summaries : []) ??
+  //             got?.items ??
+  //             [];
+
+  //         const arr = Array.isArray(rawItems) ? rawItems : [];
+  //         const normalized = arr.map((it: any) => normalizeItem(it));
+  //         processed =
+  //           filterCodes.length > 0
+  //             ? normalized.filter((it: any) => {
+  //                 const code = String(it.Item_Code ?? "").toLowerCase().trim();
+  //                 return filterCodes.includes(code);
+  //               })
+  //             : normalized;
+  //       }
+
+  //       // dispatch normalized data
+  //       dispatch(fetchSuccess(processed));
+  //     } catch (e: any) {
+  //       dispatch(fetchFailure(e?.message ?? "Failed to load detail data"));
+  //     }
+  //   },
+  //   [callFetch, dispatch, id, selectedBranch, selectedDepartment, itemCode]
+  // );
+
   const fetchDetail = useCallback(
     async (payload: any) => {
       dispatch(clearData());
       dispatch(fetchStart());
       console.log("Functions running");
+
       try {
         const { got } = await callFetch<any>("get-hbtsync-data", "POST", {
           branchCode: selectedBranch || payload.branchCode || "",
@@ -323,7 +769,9 @@ const ThemeSettings: React.FC = () => {
 
         let processed: any[] = [];
 
-        // Helper: safely parse numeric-like strings to numbers, otherwise return null
+        // ──────────────────────────────────────────────────────────────
+        // Helper utilities (same as before)
+        // ──────────────────────────────────────────────────────────────
         const safeNumber = (v: any) => {
           if (v === null || v === undefined || v === "") return null;
           if (typeof v === "number") return Number.isFinite(v) ? v : null;
@@ -333,156 +781,29 @@ const ThemeSettings: React.FC = () => {
           return Number.isFinite(n) ? n : null;
         };
 
-        // Canonical mapping: for each canonical key list possible source keys (ordered)
         const FIELD_MAP: Record<string, string[]> = {
-          // branch-level
-          Branch_Code: [
-            "Branch_Code",
-            "branchCode",
-            "branch_code",
-            "Branch Code",
-          ],
-          Branch_Name: [
-            "Branch_Name",
-            "branchName",
-            "branch_name",
-            "Branch Name",
-          ],
-          Item_Code: ["Item_Code", "item_code", "Item Code", "itemCode"],
-          Item_Name: [
-            "Item_Name",
-            "item_name",
-            "ItemName",
-            "itemName",
-            "itemname",
-          ],
-          category: [
-            "category",
-            "Category",
-            "item_category",
-            "item_cat",
-            "cat",
-          ],
-          subcategory: [
-            "subcategory",
-            "sub_category",
-            "SubCategory",
-            "subcat",
-            "sub_category_name",
-          ],
-          description: [
-            "description",
-            "item_desc",
-            "item_description",
-            "Item_Desc",
-            "desc",
-          ],
-          Department: [
-            "Department",
-            "department",
-            "item_department",
-            "Item Department",
-          ],
-          item_sub_category: [
-            "item_sub_category",
-            "sub_category",
-            "subCategory",
-            "Item_Sub_Category",
-            "itemSubCategory",
-          ],
-          item_status: [
-            "item_status",
-            "status",
-            "Item_Status",
-            "ItemStatus",
-            "active_inactive",
-            "is_active",
-          ],
-          exp_imp_sur: ["exp_imp_sur", "expImpSur", "exp_imp", "exp_imp_surr"],
-
-          // numeric-ish
-          Site_Qtys: [
-            "Site_Qtys",
-            "site_qty",
-            "site_qtys",
-            "Site_Qtys",
-            "total_site_qty",
-          ],
-          Total_Sale_Qty: [
-            "Total_Sale_Qty",
-            "total_sale_qty",
-            "TotalSaleQty",
-            "Total Sale Qty",
-          ],
-          Total_Sale_Val: [
-            "Total_Sale_Val",
-            "total_sale_val",
-            "TotalSaleVal",
-            "Total Sale Val",
-          ],
-          Local_HBT_Class: [
-            "Local_HBT_Class",
-            "local_hbt_class",
-            "Local HBT Class",
-          ],
-          Global_HBT_Class: [
-            "Global_HBT_Class",
-            "global_hbt_class",
-            "Global HBT Class",
-          ],
-          Stock_Remarks: ["Stock_Remarks", "stock_remarks", "Stock Remarks"],
-          Stock_Days_Diff: [
-            "Stock_Days_Diff",
-            "stock_days_diff",
-            "Stock Days Diff",
-          ],
-          Stock_Bucket: ["Stock_Bucket", "stock_bucket", "Stock Bucket"],
-          Sales_Bucket: ["Sales_Bucket", "sales_bucket", "Sales Bucket"],
-          Str_Stk_Sp_Value: [
-            "Str_Stk_Sp_Value",
-            "str_stk_sp_value",
-            "Str Stk Sp Value",
-          ],
-          Tax_Per_Qty: ["Tax_Per_Qty", "tax_per_qty", "Tax Per Qty"],
-          Mrgn_Per_Qty: ["Mrgn_Per_Qty", "mrgn_per_qty", "Mrgn Per Qty"],
-          Ttl_Mrgn: ["Ttl_Mrgn", "ttl_mrgn", "Ttl Mrgn", "Total_Mrgn"],
-          scheme_type: ["scheme_type", "schemeType", "Scheme_Type"],
-          scheme_group: ["scheme_group", "schemeGroup", "Scheme_Group"],
-          state: ["state", "State", "branch_state", "branchState"],
-          // process_date: ["process_date", "processDate", "process date"],
-          // uploaded_on: ["uploaded_on", "uploadedOn", "uploaded"],
-          // created_at: ["created_at", "createdAt"],
-          // updated_at: ["updated_at", "updatedAt"],
-
-          // new item metadata
+          /* ... your full map ... */
         };
 
-        // Helper: pull first present field from object using FIELD_MAP (case-insensitive)
         const extractField = (obj: any, canonical: string): any => {
           const candidates = FIELD_MAP[canonical] ?? [canonical];
           if (!obj) return null;
           for (const k of candidates) {
             if (Object.prototype.hasOwnProperty.call(obj, k)) return obj[k];
           }
-          // case-insensitive fallback
-          const objKeys = Object.keys(obj);
-          for (const k of candidates) {
-            const fk = objKeys.find(
-              (kk) => kk.toLowerCase() === String(k).toLowerCase()
-            );
-            if (fk) return obj[fk];
+          const lower = canonical.toLowerCase();
+          for (const k of Object.keys(obj)) {
+            if (k.toLowerCase() === lower) return obj[k];
           }
           return null;
         };
 
-        // Helper: normalize a single item object
         const normalizeItem = (it: any, parentBranch?: any) => {
           const normalized: Record<string, any> = {
             Item_Code: extractField(it, "Item_Code"),
             Item_Name: extractField(it, "Item_Name"),
             Department: extractField(it, "Department"),
 
-            // new metadata
             category: extractField(it, "category"),
             subcategory: extractField(it, "subcategory"),
             description: extractField(it, "description"),
@@ -497,7 +818,6 @@ const ThemeSettings: React.FC = () => {
               extractField(it, "item_status") ?? extractField(it, "status"),
             exp_imp_sur: extractField(it, "exp_imp_sur"),
 
-            // numeric-ish fields coerced where possible
             Site_Qtys: safeNumber(extractField(it, "Site_Qtys")),
             Total_Sale_Qty: safeNumber(extractField(it, "Total_Sale_Qty")),
             Total_Sale_Val: safeNumber(extractField(it, "Total_Sale_Val")),
@@ -513,21 +833,15 @@ const ThemeSettings: React.FC = () => {
             Ttl_Mrgn: safeNumber(extractField(it, "Ttl_Mrgn")),
             scheme_type: extractField(it, "scheme_type"),
             scheme_group: extractField(it, "scheme_group"),
-
-            // dates / timestamps (left as-is)
-            // process_date: extractField(it, "process_date"),
-            // uploaded_on: extractField(it, "uploaded_on"),
-            // created_at: extractField(it, "created_at"),
-            // updated_at: extractField(it, "updated_at"),
-
-            // keep raw object reference for debug if needed
-            // __raw: it,
+            balance_bin_stock: safeNumber(
+              extractField(it, "balance_bin_stock")
+            ),
+            po_qty: safeNumber(extractField(it, "po_qty")),
           };
 
           return normalized;
         };
 
-        // Helper: extract items array robustly from a branch object
         const extractItemsFromBranch = (b: any) => {
           if (!b) return [];
           if (Array.isArray(b.items)) return b.items;
@@ -535,9 +849,6 @@ const ThemeSettings: React.FC = () => {
           if (Array.isArray(b.ITEMS)) return b.ITEMS;
           if (Array.isArray(b.ItemsList)) return b.ItemsList;
           if (Array.isArray(b.itemsList)) return b.itemsList;
-          // some responses use "Items" inside root, some use "items" — check common wrappers
-          if (Array.isArray(b.Items)) return b.Items;
-          // fallback: if object itself looks like an item (has Item_Code) return as single-element array
           const hasItemCode =
             b &&
             (b.Item_Code ||
@@ -545,51 +856,84 @@ const ThemeSettings: React.FC = () => {
               b.ItemCode ||
               b["Item Code"] ||
               b.itemCode);
-          if (hasItemCode) return [b];
-          return [];
+          return hasItemCode ? [b] : [];
         };
 
-        // Normalize depending on response shape (branched vs flat)
-        if (id === "2") {
-          // branched response expected: normalize branches, flatten items
+        const parseCodes = (raw: any): string[] => {
+          if (!raw) return [];
+          if (Array.isArray(raw)) {
+            return raw
+              .map((x) => String(x ?? "").trim())
+              .filter(Boolean)
+              .map((s) => s.toLowerCase());
+          }
+          return String(raw)
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+            .map((s) => s.toLowerCase());
+        };
+
+        const filterCodes = parseCodes(
+          itemCode ?? payload?.itemCode ?? got?.applied_itemCode ?? null
+        );
+
+        // ──────────────────────────────────────────────────────────────
+        // Unified handling – both id === "1" and id === "2" now use the
+        // exact same branched → flatten → normalize → filter logic
+        // ──────────────────────────────────────────────────────────────
+        const isBranchedFlow = id === "1" || id === "2";
+
+        if (isBranchedFlow) {
+          // Expected shape: array of branches OR wrapper with .branches/.departments/.summaries etc.
           const branches = Array.isArray(got)
             ? got
-            : got?.departments ??
+            : got?.branches ??
+              got?.departments ??
               got?.summaries ??
-              got?.branches ??
-              (got?.items
-                ? Array.isArray(got.items)
-                  ? got.items
-                  : [got]
-                : []);
+              got?.items ??
+              (Array.isArray(got.items) ? got.items : []);
 
-          const items = (branches || []).flatMap((b: any) => {
-            const rawItems = extractItemsFromBranch(b);
-            return rawItems.map((it: any) => normalizeItem(it, b));
+          const allItems = (branches || []).flatMap((branch: any) => {
+            const rawItems = extractItemsFromBranch(branch);
+            return rawItems.map((item: any) => normalizeItem(item, branch));
           });
 
-          processed = itemCode
-            ? items.filter((it: any) =>
-                String(it.Item_Code ?? "")
-                  .toLowerCase()
-                  .includes(String(itemCode).toLowerCase())
-              )
-            : items;
+          processed =
+            filterCodes.length > 0
+              ? allItems.filter((it: any) =>
+                  filterCodes.includes(
+                    String(it.Item_Code ?? "")
+                      .trim()
+                      .toLowerCase()
+                  )
+                )
+              : allItems;
         } else {
-          // non-branch flow: expect array of items or wrapper shapes
+          // Fallback flat flow (kept for any other id values)
           const rawItems = Array.isArray(got)
             ? got
             : got?.departments ??
               got?.department_summaries ??
-              (got?.status === "ok" ? got.summaries : []) ??
               got?.items ??
+              got?.summaries ??
               [];
 
           const arr = Array.isArray(rawItems) ? rawItems : [];
-          processed = arr.map((it: any) => normalizeItem(it));
+          const normalized = arr.map((it: any) => normalizeItem(it));
+
+          processed =
+            filterCodes.length > 0
+              ? normalized.filter((it: any) =>
+                  filterCodes.includes(
+                    String(it.Item_Code ?? "")
+                      .trim()
+                      .toLowerCase()
+                  )
+                )
+              : normalized;
         }
 
-        // dispatch normalized data
         dispatch(fetchSuccess(processed));
       } catch (e: any) {
         dispatch(fetchFailure(e?.message ?? "Failed to load detail data"));
@@ -609,6 +953,8 @@ const ThemeSettings: React.FC = () => {
     } else if (basePath === "") {
       dispatch(fetchDashboardData(payload));
       fetchData(payload);
+    } else if (basePath === "stock-comparison") {
+      fetchData(payload);
     }
   }, [basePath, buildPayload, fetchData, fetchDetail]);
 
@@ -622,10 +968,9 @@ const ThemeSettings: React.FC = () => {
   // Handle filter submit
   const handleFilterSubmit = form.handleSubmit((values) => {
     (onFilterSubmit as any)(values);
+    console.log("vvvvvvv", values);
     debouncedTriggerFetch();
-    // if (basePath === "summaries") {
-    //   fetchData(values);
-    // }
+    // console.log("Else")
   });
 
   // Apply theme
@@ -687,7 +1032,7 @@ const ThemeSettings: React.FC = () => {
     localStorage.removeItem("layoutStyling");
     localStorage.removeItem("layoutThemeColors");
     localStorage.removeItem("userThemeOverride");
-    localStorage.removeItem("openThemeSection"); // Reset collapse state
+    localStorage.removeItem("openThemeSection");
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const initialTheme = mediaQuery.matches ? "dark_mode" : "light_mode";
@@ -755,7 +1100,7 @@ const ThemeSettings: React.FC = () => {
           </div>
 
           <div className="sidebar-body p-0">
-            <form onSubmit={handleFilterSubmit}>
+            <form>
               {/* === FILTERS SECTION === */}
               <div className="theme-mode mb-3">
                 <div
@@ -865,46 +1210,6 @@ const ThemeSettings: React.FC = () => {
                         </div>
                       </div>
                     </div>
-
-                    {/* Navigation Colors */}
-                    {/* <div className="theme-mode">
-                      <div className="theme-head">
-                        <h6>Navigation Colors</h6>
-                      </div>
-                      <div className="row">
-                        {["light", "grey", "dark"].map((color) => (
-                          <div className="col-xl-4" key={color}>
-                            <div className="layout-wrap">
-                              <div className="d-flex align-items-center">
-                                <div className="status-toggle d-flex align-items-center me-2">
-                                  <input
-                                    type="radio"
-                                    name="nav_color"
-                                    id={`${color}_color`}
-                                    className="check nav-color"
-                                    checked={layoutTheme === color}
-                                    onChange={() => {
-                                      if (color === "light") layoutLight();
-                                      if (color === "grey") layoutGrey();
-                                      if (color === "dark") layoutDark();
-                                    }}
-                                  />
-                                  <label
-                                    htmlFor={`${color}_color`}
-                                    className="checktoggles"
-                                  >
-                                    <span className="theme-name">
-                                      {color.charAt(0).toUpperCase() +
-                                        color.slice(1)}
-                                    </span>
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div> */}
                   </div>
                 )}
               </div>
